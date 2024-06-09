@@ -31,8 +31,8 @@ export default function Cardd() {
             image={data.image}
             title={data.title}
           />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+          <CardContent style={{ textAlign: 'center' }}>
+            <Typography gutterBottom variant="h5" component="div"  style={{color:'#4AA088', fontWeight:'bold'}}>
               {data.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -40,13 +40,27 @@ export default function Cardd() {
             </Typography>
           </CardContent>
           <CardActions style={{ justifyContent: 'center' }}>
-            <Button
-              size="small"
-              variant="contained"
-              style={{ backgroundColor: '#53C2C2', color: 'white', borderRadius: '50px', padding: '3%', textTransform: 'none' }}
-            >
-              Remove Book
-            </Button>
+          <Button
+            variant="contained"
+            sx={{
+              width: {
+                xs: '150px', 
+                sm: '150px', 
+                md: '150px',
+              },
+              backgroundColor: '#53C2C2',
+              color: 'white',
+              borderRadius: '50px',
+              padding: '2%',
+              margin:'2%',
+              textTransform: 'none', 
+              '&:hover': {
+                backgroundColor: '#4AA088', 
+              },
+            }}
+          >
+            Remove Book
+          </Button>
           </CardActions>
         </Card>
       ))}

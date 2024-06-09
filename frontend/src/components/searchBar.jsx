@@ -3,9 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 
 const Search = styled('div')(({ theme }) => ({
@@ -24,12 +22,13 @@ const Search = styled('div')(({ theme }) => ({
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
+  padding: theme.spacing(1, 2),
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
   display: 'flex',
   alignItems: 'center',
+  color:'#CFFAFA',
   justifyContent: 'center',
 }));
 
@@ -38,7 +37,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -52,20 +50,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function SearchAppBar() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+      <AppBar
+        position="static"
+        sx={{
+          width: {
+            xs: '90%', 
+            sm: '90%', 
+            md: '65%',  
+          },
+          backgroundColor: '#335C6E',
+          margin: '1% auto',
+          padding: '2%',
+          borderRadius: '10px',
+        }}
+      >
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Search sx={{ margin: '0 auto' }}>
+          <Search sx={{ width: '100%', padding: '0.8%' }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -74,7 +76,7 @@ export default function SearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <Box sx={{ flexGrow: 2 }} />
+          <Box sx={{ flexGrow: 1 }} />
         </Toolbar>
       </AppBar>
     </Box>
