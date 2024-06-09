@@ -12,7 +12,6 @@ import image4 from '../assets/image4.webp';
 import image5 from '../assets/image5.webp';
 import image6 from '../assets/image6.webp';
 
-
 const cardData = [
   { image: image1, title: 'Goat Matata', description: 'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica' },
   { image: image2, title: 'The lazy hen', description: 'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica' },
@@ -20,8 +19,6 @@ const cardData = [
   { image: image4, title: 'The old granny', description: 'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica' },
   { image: image5, title: 'Magic dragons', description: 'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica' },
   { image: image6, title: 'Fairy tale', description: 'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica' },
-
-
 ];
 
 export default function Cardd() {
@@ -30,8 +27,7 @@ export default function Cardd() {
       {cardData.map((data, index) => (
         <Card key={index} sx={{ maxWidth: 350, margin: 5 }}>
           <CardMedia
-            sx={{ height: 250 , width: 350 }}
-
+            sx={{ height: 250, width: 350 }}
             image={data.image}
             title={data.title}
           />
@@ -43,9 +39,14 @@ export default function Cardd() {
               {data.description}
             </Typography>
           </CardContent>
-          <CardActions>
-            <Button size="small">Share</Button>
-            <Button size="small">Learn More</Button>
+          <CardActions style={{ justifyContent: 'center' }}>
+            <Button
+              size="small"
+              variant="contained"
+              style={{ backgroundColor: '#53C2C2', color: 'white', borderRadius: '50px', padding: '3%', textTransform: 'none' }}
+            >
+              Remove Book
+            </Button>
           </CardActions>
         </Card>
       ))}
