@@ -31,7 +31,7 @@ export default function Cardd() {
             image={data.image}
             title={data.title}
           />
-          <CardContent style={{ textAlign: 'center' }}>
+          <CardContent style={{ textAlign: 'center', fontSize:'16px' }}>
             <Typography gutterBottom variant="h5" component="div"  style={{color:'#4AA088', fontWeight:'bold'}}>
               {data.title}
             </Typography>
