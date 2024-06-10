@@ -11,9 +11,9 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia,
   Typography,
   Grid,
+  CardMedia
 } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
@@ -68,12 +68,11 @@ export default function SearchAppBar() {
       const response = await axios.get(`https://openlibrary.org/search.json?q=${searchQuery}`);
       if (response.data.docs && response.data.docs.length > 0) {
         const bookData = response.data.docs[0];
-        const coverId = bookData.cover_i ? `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg` : 'https://via.placeholder.com/150';
         setBook({
           title: bookData.title,
           author: bookData.author_name ? bookData.author_name.join(', ') : 'Unknown Author',
           description: bookData.first_sentence ? bookData.first_sentence : 'No description available.',
-          image: coverId,
+          coverId: bookData.cover_i ? bookData.cover_i : null,
         });
       } else {
         setBook(null);
@@ -128,25 +127,35 @@ export default function SearchAppBar() {
           </Search>
           <Button
             variant="contained"
-            color="secondary"
             onClick={handleSearch}
-            sx={{ marginLeft: '10px', padding: '6px 16px' }}
+
+            sx={{
+              width: {
+                xs: '150px',
+                sm: '150px',
+                md: '150px',
+              },
+              backgroundColor: '#53C2C2',
+              color: 'white',
+              borderRadius: '50px',
+              padding: '2%',
+              margin: '2%',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: '#4AA088',
+              },
+            }}
           >
             Search
           </Button>
+
         </Toolbar>
       </AppBar>
       {book && (
         <Card sx={{ width: '65%', mt: 3 }}>
-          <CardMedia
-            component="img"
-            height="140"
-            image={book.image}
-            alt={book.title}
-          />
           <CardContent>
-            <Typography variant="h6">{book.title}</Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="h6" color="#335C6E" sx={{padding: 0.1}}>{book.title}</Typography>
+            <Typography variant="body2" color="#4AA088" sx={{padding: 1}}>
               {book.author}
             </Typography>
             <Typography variant="body2" color="textSecondary">
@@ -156,46 +165,86 @@ export default function SearchAppBar() {
           <CardActions>
             <Button
               variant="contained"
-              color="primary"
-              onClick={handleAddToReadingList}
-              sx={{ margin: '0 auto' }}
+              onClick={ handleAddToReadingList}
+
+              sx={{
+                width: {
+                  xs: '250px',
+                  sm: '250px',
+                  md: '250px',
+                },
+                backgroundColor: '#53C2C2',
+                color: 'white',
+                borderRadius: '50px',
+                padding: '2%',
+                margin: '2%',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#4AA088',
+                },
+              }}
             >
-              Add to Reading List
+              Add To Reading List
             </Button>
           </CardActions>
         </Card>
       )}
       {readingList.length > 0 && (
         <Box sx={{ mt: 4, width: '65%' }}>
-          <Typography variant="h6">Reading List</Typography>
+          <Typography variant="h6" style={{ color: '#4AA088',fontWeight: 'bold', textAlign:'center', padding: 15}}>Reading List</Typography>
           <Grid container spacing={2}>
             {readingList.map((book, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={book.image}
-                    alt={book.title}
-                  />
-                  <CardContent>
-                    <Typography variant="h6">{book.title}</Typography>
-                    <Typography variant="body2" color="textSecondary">
+              <Grid item xs={12} sm={6} md={6} key={index}>
+                <Card  >
+                  {book.coverId && (
+                    <CardMedia
+                      component="img"
+                      sx={{ height: 350, width: '100%' }}
+                      image={`https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`}
+                      alt={book.title}
+                    />
+
+                  )}
+
+
+
+                  <CardContent style={{ textAlign: 'center', fontSize: '16px' }}>
+                    <Typography gutterBottom variant="h5" component="div" style={{ color: '#4AA088', fontWeight: 'bold' }} >{book.title}</Typography>
+                    <Typography variant="body1" color="textSecondary"  >
                       {book.author}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                       {book.description}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+
+                  <CardActions style={{ justifyContent: 'center' }}>
+
                     <Button
                       variant="contained"
-                      color="secondary"
                       onClick={() => handleRemoveFromReadingList(index)}
-                      sx={{ margin: '0 auto' }}
+
+                      sx={{
+                        width: {
+                          xs: '150px',
+                          sm: '150px',
+                          md: '150px',
+                        },
+                        backgroundColor: '#53C2C2',
+                        color: 'white',
+                        borderRadius: '50px',
+                        padding: '2%',
+                        margin: '2%',
+                        textTransform: 'none',
+                        '&:hover': {
+                          backgroundColor: '#4AA088',
+                        },
+                      }}
                     >
-                      Remove
+                      Remove Book
                     </Button>
+
+
                   </CardActions>
                 </Card>
               </Grid>
