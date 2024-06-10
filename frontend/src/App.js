@@ -18,7 +18,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <SearchBar/>
-      {/* <Filter/> */}
+      <Filter/>
        <Cardd/>    
      </ThemeProvider>
   );
