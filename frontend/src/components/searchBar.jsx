@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { ApolloProvider, useLazyQuery } from '@apollo/client';
+import client from '../apolloClient';
+import { GET_BOOKS } from '../queries';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { getCoverPhotoURL } from '../coverPhotos'; 
 import {
   Button,
   Card,
@@ -58,28 +61,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
+function SearchAppBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [book, setBook] = useState(null);
   const [readingList, setReadingList] = useState([]);
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`https://openlibrary.org/search.json?q=${searchQuery}`);
-      if (response.data.docs && response.data.docs.length > 0) {
-        const bookData = response.data.docs[0];
-        setBook({
-          title: bookData.title,
-          author: bookData.author_name ? bookData.author_name.join(', ') : 'Unknown Author',
-          description: bookData.first_sentence ? bookData.first_sentence : 'No description available.',
-          coverId: bookData.cover_i ? bookData.cover_i : null,
-        });
-      } else {
-        setBook(null);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+  const [getBooks, { data, loading, error }] = useLazyQuery(GET_BOOKS);
+
+  const handleSearch = () => {
+    getBooks();
   };
 
   const handleAddToReadingList = () => {
@@ -95,6 +85,24 @@ export default function SearchAppBar() {
     newReadingList.splice(index, 1);
     setReadingList(newReadingList);
   };
+
+  useEffect(() => {
+    if (data && data.books) {
+      const bookData = data.books.find(b => b.title.toLowerCase().includes(searchQuery.toLowerCase()));
+      if (bookData) {
+        setBook({
+          title: bookData.title,
+          author: bookData.author,
+          description: bookData.readingLevel || 'No description available.',
+          coverId: bookData.coverPhotoURL,
+        });
+      } else {
+        setBook(null);
+      }
+    } else {
+      setBook(null);
+    }
+  }, [data, searchQuery]);
 
   return (
     <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -122,13 +130,14 @@ export default function SearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => { if (e.key === 'Enter') handleSearch(); }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') handleSearch();
+              }}
             />
           </Search>
           <Button
             variant="contained"
             onClick={handleSearch}
-
             sx={{
               width: {
                 xs: '150px',
@@ -148,14 +157,15 @@ export default function SearchAppBar() {
           >
             Search
           </Button>
-
         </Toolbar>
       </AppBar>
       {book && (
         <Card sx={{ width: '65%', mt: 3 }}>
           <CardContent>
-            <Typography variant="h6" color="#335C6E" sx={{padding: 0.1}}>{book.title}</Typography>
-            <Typography variant="body2" color="#4AA088" sx={{padding: 1}}>
+            <Typography variant="h6" color="#335C6E" sx={{ padding: 0.1 }}>
+              {book.title}
+            </Typography>
+            <Typography variant="body2" color="#4AA088" sx={{ padding: 1 }}>
               {book.author}
             </Typography>
             <Typography variant="body2" color="textSecondary">
@@ -165,8 +175,7 @@ export default function SearchAppBar() {
           <CardActions>
             <Button
               variant="contained"
-              onClick={ handleAddToReadingList}
-
+              onClick={handleAddToReadingList}
               sx={{
                 width: {
                   xs: '250px',
@@ -189,69 +198,81 @@ export default function SearchAppBar() {
           </CardActions>
         </Card>
       )}
-      {readingList.length > 0 && (
-        <Box sx={{ mt: 4, width: '65%' }}>
-          <Typography variant="h6" style={{ color: '#4AA088',fontWeight: 'bold', textAlign:'center', padding: 15}}>Reading List</Typography>
-          <Grid container spacing={2}>
-            {readingList.map((book, index) => (
-              <Grid item xs={12} sm={6} md={6} key={index}>
-                <Card  >
-                  {book.coverId && (
-                    <CardMedia
-                      component="img"
-                      sx={{ height: 350, width: '100%' }}
-                      image={`https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`}
-                      alt={book.title}
-                    />
+{readingList.length > 0 && (
+  <Box sx={{ mt: 4, width: '65%' }}>
+    <Typography
+      variant="h6"
+      style={{ color: '#4AA088', fontWeight: 'bold', textAlign: 'center', padding: 15 }}
+    >
+      Reading List
+    </Typography>
+    <Grid container spacing={2}>
+      {readingList.map((book, index) => (
+        <Grid item xs={12} sm={6} md={6} key={index}>
+          <Card>
+            {book.coverId && (
+              <CardMedia
+                component="img"
+                sx={{ height: 350, width: '100%' }}
+                image={getCoverPhotoURL(book.coverId)} // Use getCoverPhotoURL to generate the image URL
+                alt={book.title}
+              />
+            )}
+            <CardContent style={{ textAlign: 'center', fontSize: '16px' }}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                style={{ color: '#4AA088', fontWeight: 'bold' }}
+              >
+                {book.title}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {book.author}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {book.description}
+              </Typography>
+            </CardContent>
+            <CardActions style={{ justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                onClick={() => handleRemoveFromReadingList(index)}
+                sx={{
+                  width: {
+                    xs: '150px',
+                    sm: '150px',
+                    md: '150px',
+                  },
+                  backgroundColor: '#53C2C2',
+                  color: 'white',
+                  borderRadius: '50px',
+                  padding: '2%',
+                  margin: '2%',
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: '#4AA088',
+                  },
+                }}
+              >
+                Remove Book
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  </Box>
+)}
 
-                  )}
-
-
-
-                  <CardContent style={{ textAlign: 'center', fontSize: '16px' }}>
-                    <Typography gutterBottom variant="h5" component="div" style={{ color: '#4AA088', fontWeight: 'bold' }} >{book.title}</Typography>
-                    <Typography variant="body1" color="textSecondary"  >
-                      {book.author}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {book.description}
-                    </Typography>
-                  </CardContent>
-
-                  <CardActions style={{ justifyContent: 'center' }}>
-
-                    <Button
-                      variant="contained"
-                      onClick={() => handleRemoveFromReadingList(index)}
-
-                      sx={{
-                        width: {
-                          xs: '150px',
-                          sm: '150px',
-                          md: '150px',
-                        },
-                        backgroundColor: '#53C2C2',
-                        color: 'white',
-                        borderRadius: '50px',
-                        padding: '2%',
-                        margin: '2%',
-                        textTransform: 'none',
-                        '&:hover': {
-                          backgroundColor: '#4AA088',
-                        },
-                      }}
-                    >
-                      Remove Book
-                    </Button>
-
-
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
     </Box>
+  );
+}
+
+export default function App() {
+  return (
+    <ApolloProvider client={client}>
+      <SearchAppBar />
+    </ApolloProvider>
   );
 }
