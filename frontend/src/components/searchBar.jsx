@@ -93,7 +93,6 @@ function SearchAppBar() {
         setBook({
           title: bookData.title,
           author: bookData.author,
-          description: bookData.readingLevel || 'No description available.',
           coverId: bookData.coverPhotoURL,
         });
       } else {
@@ -167,9 +166,6 @@ function SearchAppBar() {
             </Typography>
             <Typography variant="body2" color="#4AA088" sx={{ padding: 1 }}>
               {book.author}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {book.description}
             </Typography>
           </CardContent>
           <CardActions>
