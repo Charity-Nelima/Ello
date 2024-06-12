@@ -241,7 +241,7 @@ function SearchAppBar() {
                     <CardMedia
                       component="img"
                       sx={{ height: 350, width: '100%' }}
-                      image={ customImages[book.coverId]}
+                      image={customImages[book.coverId]}
                       alt={book.title}
                     />
                   )}
@@ -262,6 +262,7 @@ function SearchAppBar() {
                     </Typography>
                   </CardContent>
                   <CardActions style={{ justifyContent: 'center' }}>
+
                     <Button
                       variant="contained"
                       onClick={() => handleRemoveFromReadingList(index)}
