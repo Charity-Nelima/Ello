@@ -8,7 +8,17 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { getCoverPhotoURL } from '../coverPhotos'; 
+import image1 from '../assets/image1.webp';
+import image2 from '../assets/image2.webp';
+import image3 from '../assets/image3.webp';
+import image4 from '../assets/image4.webp';
+import image5 from '../assets/image5.webp';
+import image6 from '../assets/image6.webp';
+import image7 from '../assets/image7.webp';
+import image8 from '../assets/image8.webp';
+import image9 from '../assets/image6.webp';
+import image10 from '../assets/image10.webp';
+
 import {
   Button,
   Card,
@@ -18,6 +28,10 @@ import {
   Grid,
   CardMedia
 } from '@mui/material';
+
+
+
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -65,11 +79,15 @@ function SearchAppBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [book, setBook] = useState(null);
   const [readingList, setReadingList] = useState([]);
+  console.log('readingList', readingList)
 
   const [getBooks, { data, loading, error }] = useLazyQuery(GET_BOOKS);
 
-  const handleSearch = () => {
-    getBooks();
+  console.log('data', data)
+  const handleSearch = async () => {
+    const response = await getBooks();
+    console.log("Response", response)
+    console.log('search')
   };
 
   const handleAddToReadingList = () => {
@@ -79,7 +97,20 @@ function SearchAppBar() {
       setSearchQuery('');
     }
   };
+  const customImages = {
 
+    "/assets/image1.webp": image1,
+    "/assets/image2.webp": image2,
+    "/assets/image3.webp": image3,
+    "/assets/image4.webp": image4,
+    "/assets/image5.webp": image5,
+    "/assets/image6.webp": image6,
+    "/assets/image7.webp": image7,
+    "/assets/image8.webp": image8,
+    "/assets/image9.webp": image9,
+    "/assets/image10.webp": image10,
+  }
+  console.log('customImages', customImages["/assets/image1.webp"])
   const handleRemoveFromReadingList = (index) => {
     const newReadingList = [...readingList];
     newReadingList.splice(index, 1);
@@ -194,72 +225,72 @@ function SearchAppBar() {
           </CardActions>
         </Card>
       )}
-{readingList.length > 0 && (
-  <Box sx={{ mt: 4, width: '65%' }}>
-    <Typography
-      variant="h6"
-      style={{ color: '#4AA088', fontWeight: 'bold', textAlign: 'center', padding: 15 }}
-    >
-      Reading List
-    </Typography>
-    <Grid container spacing={2}>
-      {readingList.map((book, index) => (
-        <Grid item xs={12} sm={6} md={6} key={index}>
-          <Card>
-            {book.coverId && (
-              <CardMedia
-                component="img"
-                sx={{ height: 350, width: '100%' }}
-                image={getCoverPhotoURL(book.coverId)} // Use getCoverPhotoURL to generate the image URL
-                alt={book.title}
-              />
-            )}
-            <CardContent style={{ textAlign: 'center', fontSize: '16px' }}>
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-                style={{ color: '#4AA088', fontWeight: 'bold' }}
-              >
-                {book.title}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {book.author}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                {book.description}
-              </Typography>
-            </CardContent>
-            <CardActions style={{ justifyContent: 'center' }}>
-              <Button
-                variant="contained"
-                onClick={() => handleRemoveFromReadingList(index)}
-                sx={{
-                  width: {
-                    xs: '150px',
-                    sm: '150px',
-                    md: '150px',
-                  },
-                  backgroundColor: '#53C2C2',
-                  color: 'white',
-                  borderRadius: '50px',
-                  padding: '2%',
-                  margin: '2%',
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: '#4AA088',
-                  },
-                }}
-              >
-                Remove Book
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  </Box>
-)}
+      {readingList.length > 0 && (
+        <Box sx={{ mt: 4, width: '65%' }}>
+          <Typography
+            variant="h6"
+            style={{ color: '#4AA088', fontWeight: 'bold', textAlign: 'center', padding: 15 }}
+          >
+            Reading List
+          </Typography>
+          <Grid container spacing={2}>
+            {readingList.map((book, index) => (
+              <Grid item xs={12} sm={6} md={6} key={index}>
+                <Card>
+                  {book.coverId && (
+                    <CardMedia
+                      component="img"
+                      sx={{ height: 350, width: '100%' }}
+                      image={ customImages[book.coverId]}
+                      alt={book.title}
+                    />
+                  )}
+                  <CardContent style={{ textAlign: 'center', fontSize: '16px' }}>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      style={{ color: '#4AA088', fontWeight: 'bold' }}
+                    >
+                      {book.title}
+                    </Typography>
+                    <Typography variant="body1" color="textSecondary">
+                      {book.author}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {book.description}
+                    </Typography>
+                  </CardContent>
+                  <CardActions style={{ justifyContent: 'center' }}>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleRemoveFromReadingList(index)}
+                      sx={{
+                        width: {
+                          xs: '150px',
+                          sm: '150px',
+                          md: '150px',
+                        },
+                        backgroundColor: '#53C2C2',
+                        color: 'white',
+                        borderRadius: '50px',
+                        padding: '2%',
+                        margin: '2%',
+                        textTransform: 'none',
+                        '&:hover': {
+                          backgroundColor: '#4AA088',
+                        },
+                      }}
+                    >
+                      Remove Book
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
 
     </Box>
   );

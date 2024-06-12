@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import SearchBar from './components/searchBar';
-import Cardd from './components/Display';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ApolloProvider } from '@apollo/client';
@@ -22,7 +21,6 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <SearchBar />
-        <Cardd />
       </ThemeProvider>
     </ApolloProvider>
   );
