@@ -75,7 +75,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchAppBar() {
+function SearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [book, setBook] = useState(null);
   const [readingList, setReadingList] = useState([]);
@@ -300,7 +300,7 @@ function SearchAppBar() {
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <SearchAppBar />
+      <SearchBar />
     </ApolloProvider>
   );
 }
